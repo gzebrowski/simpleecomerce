@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" ng-app="EcommerceApp" ng-controller="EcommerceCtrl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui/jquery-ui.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/foundation.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <script>
+        window.readyFunctions = [];
+    </script>
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+        }
+    </style>
+{% block extraheader %}{% endblock extraheader %}
+</head>
+
+<body id="body">
+    <div class="off-canvas-wrapper">
+        <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+            <div class="off-canvas-content" data-off-canvas-content>
+                <header>{% include 'blocks/header.html' %}</header>
+                {% block main_content %}
+                {% endblock %}
+                <footer>{% include 'blocks/footer.html' %}</footer>
+            </div>
+        </div>
+    </div>
+    {% include 'blocks/basket.html' %}
+    {% include 'blocks/checkout.html' %}
+    {% include 'blocks/alert_modal.html' %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'js/what-input.js' %}"></script>
+    <script src="{% static 'js/foundation.min.js' %}"></script>
+    <script src="{% static 'js/angular-1.4.9/angular.min.js' %}"></script>
+    <script src="{% static 'js/angular_app.js' %}"></script>
+    <script>
+        $(document).foundation()
+        $(document).ready(function() {
+            var x;
+            for (x = 0; x < window.readyFunctions.length; x++) {
+                window.readyFunctions[x]();
+            }
+        });
+    </script>
+    {% block mostbottom %}{% endblock mostbottom %}
+</body>
+</html>

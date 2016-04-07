@@ -1,0 +1,20 @@
+# Embedded file name: e:\147\moje\my_clients\remerce\bakkerleo\app\cms\admin.py
+from django.contrib import admin
+from .models import StaticPage, MenuType, MenuItem
+
+@admin.register(StaticPage)
+
+class StaticPageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'url')
+
+
+@admin.register(MenuType)
+
+class MenuTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+
+@admin.register(MenuItem)
+
+class MenuItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'label', 'static_page', 'custom_url', 'order', 'active', 'nofollow')

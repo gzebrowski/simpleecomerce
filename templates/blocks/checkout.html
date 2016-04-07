@@ -1,0 +1,145 @@
+{% load cms_tags %}
+<div class="reveal" id="order-modal" data-reveal>
+    <h1>Checkout</h1>
+    <form name="forms.checkout" method="post" ng-init="createCollection('formCheckout')">
+        <fieldset>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.email.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.email|ng_model:"formCheckout.email"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right">
+                    {{ order_form.company_name.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.company_name|ng_model:"formCheckout.company_name" }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.first_name.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.first_name|ng_model:"formCheckout.first_name"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.last_name.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.last_name|ng_model:"formCheckout.last_name"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.city.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.city|ng_model:"formCheckout.city"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.zip_code.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.zip_code|ng_model:"formCheckout.zip_code"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.street.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.street|ng_model:"formCheckout.street"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.house_no.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.house_no|ng_model:"formCheckout.house_no"|required }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns text-right field-required">
+                    {{ order_form.telephone.label }}
+                </div>
+                <div class="medium-6 columns">
+                    {{ order_form.telephone|ng_model:"formCheckout.telephone"|required }}
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <label>Collecting point</label>
+            <div class="option-set">
+            {% for val, label in order_form.collection_point.field.choices %}
+                {% if val %}
+                <div class="option">
+                    <label><input type="radio" name="collection_point" value="{{ val }}" ng-model="formCheckout.collection_point" ng-required="!formCheckout.collection_point"> {{ label }}</label>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            <div class="row">
+                <div class="medium-12 columns error callout alert" ng-if="forms.checkout.coll_time.$error.tooearly">You must select date and time at least 24h ahead</div>
+                <div class="medium-6 columns">
+                    <input type="text" name="coll_date" readonly ng-model="formCheckout.coll_date" required placeholder="select date">
+                </div>
+                <div class="medium-6 columns">
+                    <select name="coll_time" ng-model="formCheckout.coll_time" required ng-init="formCheckout.coll_time = ''" valid-condition="{tooearly: tooEarly(formCheckout.coll_date, formCheckout.coll_time)}">
+                        <option value="">Select time</option>
+                        <option value="08:00">8:00-9:30</option>
+                        <option value="09:30">9:30-11:00</option>
+                        <option value="11:00">11:00-12:30</option>
+                        <option value="12:30">12:30-14:00</option>
+                        <option value="14:00">14:00-15:30</option>
+                        <option value="15:30">15:30-17:00</option>
+                    </select>
+                </div>
+                <script>
+                    window.readyFunctions.push(function() {
+                        var tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        $('input[name=coll_date]').datepicker({dateFormat: "yy-mm-dd", firstDay: 1, minDate: tomorrow});
+                    });
+                </script>
+            </div>
+        </fieldset>
+        <fieldset>
+            <label>Payment method</label>
+
+            <div class="option-set">
+            {% for val, label in order_form.payment_method.field.choices %}
+                {% if val %}
+                <div class="option">
+                    <label><input type="radio" name="payment_method" value="{{ val }}" ng-model="formCheckout.payment_method" ng-required="!formCheckout.payment_method"> {{ label }}</label>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </fieldset>
+        <fieldset>
+            <label>Comment</label>
+            <div class="">
+                {{ order_form.text|ng_model:"formCheckout.text"|add_placeholder }}
+            </div>
+            <div class="text-center">
+                <a class="button float-right" ng-class="{disabled: !forms.checkout.$valid || inProggress}" ng-click="!inProggress && doCheckout($event, 'forms.checkout', formCheckout)">Checkout</a>
+            </div>
+
+        </fieldset>
+    </form>
+    <div>
+
+    </div>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>

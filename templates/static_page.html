@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n staticfiles cms_tags %}
+
+
+{% block main_content %}
+<div class="row">
+    <div class="small-12 columns">
+{{ object.content|safe }}
+    </div>
+</div>
+{% endblock main_content %}

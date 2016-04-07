@@ -1,0 +1,30 @@
+<div class="reveal" id="basket-modal" data-reveal>
+    <h1>Your basket</h1>
+    <div class="callout warning" ng-if="!basket.total">At this moment your basket is empty</div>
+    <div class="" ng-if="basket.total">
+        <ul class="no-bullet">
+            <li class="row" ng-repeat="item in basket.items">
+                <div class="small-3 columns"><img ng-src="{! item.image !}"></div>
+                <div class="small-8 columns">
+                    <h5 ng-bind="item.name"></h5>
+                    <div>
+                        <span ng-if="item.quantity > 1" ng-bind-template="{! item.quantity !} x "></span>
+                        <span ng-bind-template="€ {! item.price !}"></span>
+                    </div>
+                </div>
+                <div class="small-1 columns">
+                    <a ng-click="removeProduct($event, item.key)" title="remove">&times;</a>
+                </div>
+            </li>
+        </ul>
+        <h4 class="total">
+            Total: € <span ng-bind="basket.total"></span>
+        </h4>
+        <div>
+            <a class="button float-right" data-open="order-modal">Checkout</a>
+        </div>
+    </div>
+  <button class="close-button" data-close aria-label="Close modal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>

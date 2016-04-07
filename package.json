@@ -1,0 +1,15 @@
+{
+  "name": "bakkerleo",
+  "version": "0.0.0",
+  "devDependencies": {
+    "gulp": "~3.8.10",
+    "gulp-connect": "^3.2.2",
+    "gulp-filter": "^4.0.0",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "process": "^0.11.2",
+    "run-sequence": "^1.1.5"
+  },
+  "dependencies": {}
+}

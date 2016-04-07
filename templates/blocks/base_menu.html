@@ -1,0 +1,18 @@
+<div class="menu-container {{ key }} {{ menu.class_name }}" {% for attr, val in extra_attrs %} {{ attr }}="{{ val }}"{% endfor %}>
+    {% for item, info in annotated_items %}
+        {% if info.open %}
+        <ul class="menu{% if forloop.counter0 == 0 %}{% if extra_class %} {{ extra_class }}{% endif %}{% endif %}"{% if forloop.counter0 == 0 and inner %} {{ inner }}{% endif %}>
+          <li>
+        {% else %}
+          </li>
+          <li>
+        {% endif %}
+        {% with url=item.get_url %}
+        <a {% if url %} href="{{ url }}"{% endif %}{% if item.nofollow %} rel="nofollow"{% endif %}>{{ item.label }}</a>
+        {% endwith %}
+        {% for close in info.close %}
+            </li></ul>
+        {% endfor %}
+
+    {% endfor %}
+</div>

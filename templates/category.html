@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n staticfiles cms_tags %}
+
+
+{% block main_content %}
+<row>
+    <div class="small-12 columns">
+        <div class="callout">
+            <h1>{{ object.name }}</h1>
+            {% if object.description %}
+            <div class="description">
+                {{ object.description|safe }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="small-12 columns" ng-init="createCollection('productQuantity')">
+        <div class="callout">
+            <ul class="row medium-up-3 columns">
+            {% for product in object.product_set.all %}
+                <li class="column">
+                    <h4 class="text-center"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h4>
+                    <div class="img text-center"><img alt="{{ product.name }}" src="{{ product.image.url }}"></div>
+                    <div class="price-quantity row">
+                        <div class="quantity columns small-3">
+                            <div class="row">
+                                <div class="small-12">
+                                    <input class="text-center" type="text" value="1" ng-model="productQuantity.product_{{ product.id }}" ng-init="registerProduct('productQuantity.product_{{ product.id }}', 1)" ng-pattern="/^[0-9]+$/">
+                                </div>
+                                <div class="small-12">
+                                    <div class="row columns">
+                                        <div class="small-5 text-center column callout small"><a class="expanded" ng-click="changeValue('productQuantity.product_{{ product.id }}', -1)">-</a></div>
+                                        <div class="small-5 text-center column callout small"><a class="expanded" ng-click="changeValue('productQuantity.product_{{ product.id }}', 1)">+</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="price columns small-9">
+                            <span class="stat">€ {{ product.price }}</span>
+                        </div>
+                    </div>
+                    <div class="ordering-btn">
+                        <a class="button expanded" ng-click="orderProduct('product:{{ product.id }}', '{{ product.name|escapejs }}', '{{ product.image.url }}', '{{ product.price }}', productQuantity.product_{{ product.id }})">Order</a>
+                    </div>
+
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</row>
+{% endblock main_content %}

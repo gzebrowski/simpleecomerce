@@ -1,0 +1,28 @@
+{% load cms_tags %}
+
+    <div class="top-bar mainmenu-top-bar" data-responsive-toggle="widemenu" data-hide-for="large" ng-cloak>
+      <div class="top-bar-left">
+        <ul class="menu">
+          <li class="menu-text"><a href="{% url 'home_page' %}"><span class="title-bar-title">e-Commerce</span></a></li>
+        </ul>
+      </div>
+      <div class="top-bar-right">
+        <ul class="menu">
+          <li class="menu-text"><button class="menu-icon dark" type="button" data-open="off-canvas-right"></button></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- "wider" top-bar menu for 'medium' and up -->
+    <div id="widemenu" class="top-bar mainmenu-top-bar" ng-cloak>
+      <div class="top-bar-left">
+        {% render_menu 'header' extra_class='dropdown menu' inner='data-dropdown-menu' %}
+      </div>
+      <div class="top-bar-right">
+        <a data-open="basket-modal"><i class="fa fa-shopping-cart"></i> <span ng-if="basket.total" ng-bind-template=" (€ {! basket.total !})"></span></a>
+        <a data-open="order-modal">order</a>
+      </div>
+    </div>
+    <div class="off-canvas position-right" id="off-canvas-right" data-off-canvas data-position="right">
+      {% render_menu 'header' extra_class='vertical menu' inner='data-drilldown' %}
+    </div>
