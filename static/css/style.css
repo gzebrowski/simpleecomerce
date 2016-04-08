@@ -34,3 +34,105 @@ body {
   font-size: 0.8em;
   display: inline-block;
   color: red; }
+
+#main-content-container {
+  min-height: calc(100vh - 6rem); }
+
+.cake-compose .full-image-wrapper {
+  width: 340px;
+  height: 285px;
+  position: relative;
+  overflow: hidden; }
+  .cake-compose .full-image-wrapper .img-frame {
+    position: absolute;
+    z-index: 3; }
+    .cake-compose .full-image-wrapper .img-frame.img-left {
+      left: 0;
+      top: 0;
+      z-index: 4; }
+    .cake-compose .full-image-wrapper .img-frame.img-right {
+      right: 0;
+      top: 0;
+      z-index: 4; }
+    .cake-compose .full-image-wrapper .img-frame.img-bottom {
+      left: 0px;
+      bottom: 0; }
+    .cake-compose .full-image-wrapper .img-frame.img-top {
+      left: 50px;
+      top: 0; }
+  .cake-compose .full-image-wrapper .img-label {
+    position: absolute;
+    z-index: 2;
+    padding: 1rem;
+    white-space: pre-wrap; }
+    .cake-compose .full-image-wrapper .img-label:hover {
+      border: 1px solid #888;
+      background-color: RGBA(255, 255, 255, 0.5);
+      cursor: all-scroll; }
+
+.cake-compose .steps h4 {
+  font-size: 1rem; }
+  .cake-compose .steps h4 span {
+    display: inline-block; }
+    .cake-compose .steps h4 span.number {
+      background-color: #fc0;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      line-height: 1rem;
+      padding: 0.4em 0.65em; }
+
+.cake-compose .progress-box {
+  display: none; }
+  .cake-compose .progress-box .progressbar {
+    width: 100%;
+    height: 1rem; }
+    .cake-compose .progress-box .progressbar .progress-slide {
+      height: 100%;
+      background-color: #77FF77; }
+
+.cake-compose .btn-frame {
+  border: 1px solid #888;
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.8rem;
+  font-size: 1rem; }
+  .cake-compose .btn-frame.text-scale {
+    position: relative; }
+    .cake-compose .btn-frame.text-scale::after {
+      font-size: 0.7rem;
+      line-height: 0.7rem;
+      padding-bottom: 1rem;
+      display: inline-block;
+      position: absolute; }
+    .cake-compose .btn-frame.text-scale.up {
+      font-size: 1.1rem;
+      font-weight: bold; }
+      .cake-compose .btn-frame.text-scale.up::after {
+        content: '+'; }
+    .cake-compose .btn-frame.text-scale.down {
+      font-size: 0.9rem; }
+      .cake-compose .btn-frame.text-scale.down::after {
+        content: '-'; }
+
+.cake-compose a.color-picker {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #888;
+  margin-left: 0.5rem; }
+
+.cake-compose .image-container {
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  display: table; }
+  .cake-compose .image-container .wrapper {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    padding: 50px; }
+    .cake-compose .image-container .wrapper img {
+      width: 100%; }

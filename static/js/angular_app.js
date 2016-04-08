@@ -1,5 +1,28 @@
 "use strict";
-var ecommerceApp = angular.module("EcommerceApp", []);
+var mainApp = angular.module("MainApp", []);
+
+var calc_max_width_height = function(org_x, org_y, max_width, max_height)
+{
+    org_x = org_x * 1.0;
+    org_y = org_y* 1.0;
+    if (org_x / (max_width * 1.0) > (org_y / (max_height * 1.0))) {
+        return _calc_max_width(org_x, org_y, max_width);
+    }  else {
+        return _calc_max_height(org_x, org_y, max_height);
+    }
+}
+
+var _calc_max_width = function(org_x, org_y, max_width)
+{
+    return [max_width, parseInt(org_y / (org_x / (1.0 * max_width)))];
+}
+
+var _calc_max_height = function(org_x, org_y, max_height)
+{
+    return [parseInt(org_x / (org_y / (1.0 * max_height))), max_height];
+}
+
+
 
 $(document).ready(function() {
     $('[data-open2]').click(function(){ $('#' + $(this).attr('data-open2')).foundation('open');})
@@ -16,7 +39,7 @@ function showModal(el) {
 }
 
 
-ecommerceApp.config(['$interpolateProvider', '$httpProvider', function($interpolateProvider, $httpProvider) {
+mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolateProvider, $httpProvider) {
     /* for Django templates */
     $interpolateProvider.startSymbol('{!');
     $interpolateProvider.endSymbol('!}');
@@ -61,9 +84,56 @@ ecommerceApp.config(['$interpolateProvider', '$httpProvider', function($interpol
     }
 }])
 
-.controller('EcommerceCtrl', ['$scope', '$http', '$compile', '$window', '$timeout', '$parse', '$rootScope', function($scope, $http, $compile, $window, $timeout, $parse, $rootScope) {
+.directive('myDraggable', ['$document', '$parse', function($document, $parse) {
+  return {
+    link: function(scope, element, attr) {
+        var startX = 0, startY = 0, x = 0, y = 0, initX, initY;
+        var obj = $parse(attr.myDraggable)(scope);
+        initX = obj.left;
+        initY = obj.top;
+        element.on('mousedown', function(event) {
+        // Prevent default dragging of selected content
+            event.preventDefault();
+            startX = event.pageX;
+            startY = event.pageY;
+            $document.on('mousemove', mousemove);
+            $document.on('mouseup', mouseup);
+        });
+
+        function mousemove(event) {
+            y = event.pageY - startY;
+            x = event.pageX - startX;
+            $parse(attr.myDraggable + '.top').assign(scope, y + initY);
+            $parse(attr.myDraggable + '.left').assign(scope, x + initX);
+            scope.$apply();
+            /*
+            element.css({
+              top: y + 'px',
+              left:  x + 'px'
+            });
+            */
+        }
+
+        function mouseup() {
+            $document.off('mousemove', mousemove);
+            $document.off('mouseup', mouseup);
+            var obj = $parse(attr.myDraggable)(scope);
+            initX = obj.left;
+            initY = obj.top;
+            scope.$apply();
+        }
+    }
+  };
+}])
+
+.controller('MainCtrl', ['$scope', '$http', '$compile', '$window', '$timeout', '$parse', '$rootScope', function($scope, $http, $compile, $window, $timeout, $parse, $rootScope) {
 	$scope.forms = {};
 	$scope.inProggress = false;
+    $scope.createCollection = function(name, defaultVal) {
+        defaultVal = defaultVal || {items: {}, total: 0.0};
+        $parse(name).assign($scope, defaultVal);
+        return true;
+    }
     $scope.showAlert = function (message) {
         $rootScope.alertMessage = message;
         $timeout(function() {$window.showModal('#alert-message');}, 0);
@@ -78,11 +148,6 @@ ecommerceApp.config(['$interpolateProvider', '$httpProvider', function($interpol
         return (val) ? angular.fromJson(val) : null;
 	}
     $scope.basket = $scope.restoreData('basket') || {items: {}, total: 0.0};
-    $scope.createCollection = function(name, defaultVal) {
-        defaultVal = defaultVal || {items: {}, total: 0.0};
-        $parse(name).assign($scope, defaultVal);
-        return true;
-    }
     $scope.registredProducts = [];
     $scope.registerProduct = function(model, value) {
         $parse(model).assign($scope, value);
@@ -147,4 +212,97 @@ ecommerceApp.config(['$interpolateProvider', '$httpProvider', function($interpol
         }
         return false;
     }
+    $scope.textForm = {labelStyle: {top: 50, left: 50},
+                       imgStyle: {style: {}}, cakeParams: {font_size: 16, font_color: '#000', font_type: 'Arial',
+                       text_top: 50, text_left: 50}};
+
+    $scope.uploatedFile = null;
+    $scope.submitFile = function(element, formName, proggresSelector) {
+        $scope.uploatedFile = null;
+        var val = $(element).val();
+        var progressBox = $(proggresSelector);
+        $('form[name="' + formName + '"]').ajaxSubmit({
+                beforeSubmit: function() {
+                    progressBox.find(".progress-slide").width('0%');
+                    progressBox.show();
+                },
+                uploadProgress: function(event, position, total, percentComplete){
+                    progressBox.find(".progress-slide").width(percentComplete + '%');
+                },
+                success: function(data) {
+                    var scope = $('form[name="' + formName + '"]').scope();
+                    progressBox.hide();
+                    switch (data.status) {
+                        case 'OK':
+                            $scope.uploatedFile = data.file_url;
+                            $scope.uploatedFileSize = data.size;
+                            $scope.textForm.cakeParams.image_url = data.file_key;
+                            break;
+                        case 'IMAGE_ERROR':
+                            $scope.showAlert('Sorry, error when processed. Please choose another image');
+                            break;
+                        case 'TOO_SMALL':
+                            $scope.showAlert('Error! Too small image. The size is: ' + data.size + ', minimum is: ' + data.minsize);
+                            break;
+                        case 'WRONG_FILE':
+                            $scope.showAlert('Wrong file type. Only allowed types are: png, jpg, gif');
+                            break;
+                        case 'TOO_BIG':
+                            $scope.showAlert('Too big file. Allowed maximum is:' + data.maxsize);
+                            break;
+                        }
+                        scope.$apply();
+
+                },
+                resetForm: true,
+                url: '/api/cake-composition/add/'
+            });
+
+    }
+    $scope.submitFile2 = function(el, formName) {
+        console.log(formName, el);
+    }
+    //---------------------------------------------------------------------
+
+    $scope.getLabelStyle = function() {
+        $scope.textForm.labelStyle.style = {
+            'font-family': $scope.textForm.cakeParams.font_type,
+            'font-size': $scope.textForm.cakeParams.font_size + 'px',
+            color: $scope.textForm.cakeParams.font_color,
+            top: $scope.textForm.labelStyle.top + 'px',
+            left: $scope.textForm.labelStyle.left + 'px',
+        }
+        $scope.textForm.cakeParams.text_top = $scope.textForm.labelStyle.top;
+        $scope.textForm.cakeParams.text_left = $scope.textForm.labelStyle.left;
+        return $scope.textForm.labelStyle.style;
+    }
+    $scope.setFontStyle = function(prop, val, inc) {
+        if (inc) {
+            $scope.textForm.cakeParams[prop] = Math.max(0, val + inc);
+        } else {
+            $scope.textForm.cakeParams[prop] = val;
+        }
+    }
+    $scope.getImageStyle = function() {
+        var size = $scope.uploatedFileSize;
+        if (size && (size[0] != $scope.textForm.imgStyle.imgWidth || size[1] != $scope.textForm.imgStyle.imgHeight)) {
+            $scope.textForm.imgStyle.imgHeight = size[1];
+            $scope.textForm.imgStyle.imgWidth = size[0];
+            var container = $('.full-image-wrapper');
+            var frameSizeW = container.width();
+            var frameSizeH = container.height();
+            container.find('.img-frame.space-horizontal').each(function() {
+                frameSizeW -= $(this).width();
+            })
+            container.find('.img-frame.space-vertical').each(function() {
+                frameSizeH -= $(this).height();
+            })
+            var newSize = calc_max_width_height(size[0], size[1], frameSizeW, frameSizeH);
+            $scope.textForm.cakeParams.image_scale = newSize[0] / size[0];
+            $scope.textForm.imgStyle.style.width = newSize[0];
+            $scope.textForm.imgStyle.style.height = newSize[1];
+        }
+        return $scope.textForm.imgStyle.style || {};
+    }
+
 }])

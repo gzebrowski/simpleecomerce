@@ -3,5 +3,85 @@
 
 
 {% block main_content %}
-Cake compose!!!
+<div class="row cake-compose">
+    <div class="medium-7 columns">
+        <div class="full-image-wrapper">
+            <div class="img-frame img-left space-horizontal"><img alt="" src="{% static 'images/cake-overlay-left.png' %}"></div>
+            <div class="img-frame img-right space-horizontal"><img alt="" src="{% static 'images/cake-overlay-right.png' %}"></div>
+            <div class="img-frame img-top space-vertical"><img alt="" src="{% static 'images/cake-overlay-top.png' %}"></div>
+            <div class="img-frame img-bottom space-vertical"><img alt="" src="{% static 'images/cake-overlay-bottom.png' %}"></div>
+            <div class="image-container">
+                <div class="wrapper">
+                    <img ng-src="{! uploatedFile !}" ng-if="uploatedFile" ng-style="getImageStyle()">
+                </div>
+            </div>
+            <div class="img-label" ng-bind="textForm.cakeParams.text" ng-style="getLabelStyle()" my-draggable="textForm.labelStyle"></div>
+        </div>
+    </div>
+    <div class="medium-5 columns">
+        <div class="steps step-1">
+            <h4><span class="number">1</span> <span class="title"> Plaats je foto</span></h4>
+            <p>Selecteer je foto</p>
+
+            <span class="description">Toegestane formaten: .jpg, .png en .gif<br>
+            Toegestane maximale grootte: 1,5 MB</span>
+            <div class="progress-box">
+                <strong>progress:</strong><br />
+                <div class="progressbar"><div class="progress-slide" style="width: 0%;"></div></div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" name="forms.fileForm" ng-init="createCollection('fileForm')">{% csrf_token %}
+                <div class="upload-image-cnt clearfix" ng-class="{with_image: uploatedFileSrc}">
+                    <div class="box submit-btn">
+                        <input type="file" name="cakefile" onchange="angular.element(this).scope().submitFile(this, $(this.form).attr('name'), '.step-1 .progress-box')">
+                    </div>
+                    <div class="box">
+                        <a class="btn-frame"><i class="fa fa-search-plus"></i></a>
+                        <a class="btn-frame"><i class="fa fa-search-minus"></i></a>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="steps step-2">
+            <h4><span class="number">2</span> <span class="title"> Schrijf je tekst</span></h4>
+            <div class="row">
+                <div class="medium-8 columns">
+                    <strong>Lettertype</strong><br>
+                    <select name="fonttype" ng-model="textForm.cakeParams.font_type" ng-init="textForm.cakeParams.font_type = 'Arial'" ng-change="setFontStyle('font_type', textForm.cakeParams.font_type)">
+                        <option value="Arial">Arial</option>
+                        <option value="Comic Sans MS">Comic Sans MS</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Tahoma">Tahoma</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Verdana" selected="selected">Verdana</option>
+                    </select>
+                </div>
+                <div class="medium-4 columns">
+                    <strong>Grootte</strong><br>
+                    <a class="btn-frame text-scale up" ng-click="setFontStyle('font_size', textForm.cakeParams.font_size, 1)">A</a>
+                    <a class="btn-frame text-scale down" ng-click="setFontStyle('font_size', textForm.cakeParams.font_size, -1)">A</a>
+                </div>
+                <div class="medium-12 columns">
+                    <a class="color-picker" style="background-color: #000000;" ng-click="setFontStyle('font_color', '#000000')"></a>
+                    <a class="color-picker" style="background-color: #ffffff;" ng-click="setFontStyle('font_color', '#ffffff')"></a>
+                    <a class="color-picker" style="background-color: #ff0000;" ng-click="setFontStyle('font_color', '#ff0000')"></a>
+                    <a class="color-picker" style="background-color: #ffc000;" ng-click="setFontStyle('font_color', '#ffc000')"></a>
+                    <a class="color-picker" style="background-color: #ffff00;" ng-click="setFontStyle('font_color', '#ffff00')"></a>
+                    <a class="color-picker" style="background-color: #92d050;" ng-click="setFontStyle('font_color', '#92d050')"></a>
+                    <a class="color-picker" style="background-color: #00b050;" ng-click="setFontStyle('font_color', '#00b050')"></a>
+                    <a class="color-picker" style="background-color: #00b0f0;" ng-click="setFontStyle('font_color', '#00b0f0')"></a>
+                    <a class="color-picker" style="background-color: #0070c0;" ng-click="setFontStyle('font_color', '#0070c0')"></a>
+                    <a class="color-picker" style="background-color: #ff6df3;" ng-click="setFontStyle('font_color', '#ff6df3')"></a>
+                </div>
+                <div class="medium-12 columns">
+                    <textarea ng-model="textForm.cakeParams.text" placeholder="Insert text"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock main_content %}
+{% block extra_scripts %}<script src="{% static 'js/jquery.form.min.js' %}"></script>{% endblock extra_scripts %}

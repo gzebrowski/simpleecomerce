@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" ng-app="EcommerceApp" ng-controller="EcommerceCtrl">
+<html lang="en" ng-app="MainApp" ng-controller="MainCtrl">
 
 <head>
     <meta charset="utf-8">
@@ -26,8 +26,10 @@
         <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
             <div class="off-canvas-content" data-off-canvas-content>
                 <header>{% include 'blocks/header.html' %}</header>
+                <div id="main-content-container">
                 {% block main_content %}
                 {% endblock %}
+                </div>
                 <footer>{% include 'blocks/footer.html' %}</footer>
             </div>
         </div>
@@ -41,6 +43,7 @@
     <script src="{% static 'js/foundation.min.js' %}"></script>
     <script src="{% static 'js/angular-1.4.9/angular.min.js' %}"></script>
     <script src="{% static 'js/angular_app.js' %}"></script>
+    {% block extra_scripts %}{% endblock extra_scripts %}
     <script>
         $(document).foundation()
         $(document).ready(function() {

@@ -3,7 +3,7 @@
     <div class="top-bar mainmenu-top-bar" data-responsive-toggle="widemenu" data-hide-for="large" ng-cloak>
       <div class="top-bar-left">
         <ul class="menu">
-          <li class="menu-text"><a href="{% url 'home_page' %}"><span class="title-bar-title">e-Commerce</span></a></li>
+          <li class="menu-text"><a href="{% url 'home_page' %}"><span class="title-bar-title">Home Page</span></a></li>
         </ul>
       </div>
       <div class="top-bar-right">
@@ -20,7 +20,6 @@
       </div>
       <div class="top-bar-right">
         <a data-open="basket-modal"><i class="fa fa-shopping-cart"></i> <span ng-if="basket.total" ng-bind-template=" (€ {! basket.total !})"></span></a>
-        <a data-open="order-modal">order</a>
       </div>
     </div>
     <div class="off-canvas position-right" id="off-canvas-right" data-off-canvas data-position="right">
