@@ -187,6 +187,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+TTFONTS = {
+    'arial': path_join(BASE_DIR, 'utils/fonts/arial.ttf'),
+    'comic sans ms': path_join(BASE_DIR, 'utils/fonts/ComicSansMSRegular.ttf'),
+    'courier new': path_join(BASE_DIR, 'utils/fonts/CourierNewRegular.ttf'),
+    'tahoma': path_join(BASE_DIR, 'utils/fonts/Tahoma.ttf'),
+    'Times New Roman': path_join(BASE_DIR, 'utils/fonts/Times_New_Roman_Normal.ttf'),
+    'verdana': path_join(BASE_DIR, 'utils/fonts/Verdana.ttf'),
+}
+
+CUSTOM_CAKE_PRICE = Decimal('2.00')
+USER_IMAGE_RESTRICTIONS = {'min_width': 128, 'min_height': 128, 'max_width': 1024, 'max_height': 1024}
+ORDER_RECEIVERS = ['staff1@example.com']
+
 try:
     from .local_settings import *  # noqa
 except ImportError:

@@ -171,10 +171,10 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
             var prc = parseFloat(value.price);
             var q = parseInt(value.quantity);
             if (prc && q) {
-                total += parseFloat(value.price) * parseInt(value.quantity);
+                total += prc * q;
             }
         })
-        $scope.basket.total = total;
+        $scope.basket.total = total.toFixed(2);
         $scope.storeData($scope.basket, 'basket');
     }
     $scope.removeProduct = function(event, key) {
@@ -348,6 +348,7 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
                 $scope.textForm.resultImage = data2.resultImage;
                 $scope.orderProduct(data2.key, 'Custom cake', data2.resultImage, data2.price, 1);
                 setTextFormDefault();
+                $scope.showAlert('Your composition has been saved and added to your basket. Thank you!');
             } else {
                 $scope.showAlert('Sorry, could not save the composition');
             }

@@ -30,7 +30,8 @@ class OrderAdmin(admin.ModelAdmin):
         price = 0
         for item in obj.orderitem_set.all():
             co = item.content_object
-            price += co.price * item.quantity
+            if co.price and item.quantity:
+                price += co.price * item.quantity
         return price
 
 

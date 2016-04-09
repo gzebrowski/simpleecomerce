@@ -66,6 +66,10 @@ class Product(models.Model):
         else:
             return 'product_view2', (), {'slug': self.slug, 'pk': self.pk}
 
+    @property
+    def title(self):
+        return self.name
+
 
 class CustomCake(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
@@ -86,3 +90,7 @@ class CustomCake(models.Model):
 
     def __unicode__(self):
         return unicode(self.create_time)
+
+    @property
+    def title(self):
+        return "Custom cake (id: %s)" % self.id

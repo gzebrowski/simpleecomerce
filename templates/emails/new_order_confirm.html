@@ -1,0 +1,24 @@
+{% extends "emails/base_email.html" %}
+{% load i18n staticfiles %}
+
+{% block message %}
+
+<p>Hello {% if order.company_name %}{{ order.company_name }}{% else %}{{ order.first_name }} {{ order.last_name }}{% endif %}!</p>
+<p>Your order id is: ({{ order.id }}).</p>
+<p> Collection Point: {{ order.get_collection_point_display }}</p>
+<p> Payment method: {{ order.get_payment_method_display }}</p>
+<p> Text: {{ order.text }}</p>
+<ul>
+    {% for order_item in order_items %}
+    <li>
+        <p>{{ order_item.title }}</p>
+        <p>{{ order_item.quantity }} x EUR {{ order_item.price }} = {{ order_item.item_price}}</p>
+        {% if order_item.image_key %}
+        <p><img src="cid:{{ order_item.image_key }}" /></p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<p>Total price: {{ total }}</p>
+
+{% endblock %}
