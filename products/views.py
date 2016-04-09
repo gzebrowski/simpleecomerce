@@ -4,7 +4,7 @@ import time
 from django.views.generic import DetailView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-# from django.conf import settings
+from django.conf import settings
 from PIL import Image
 from .models import Category, Product, file_storage
 from StringIO import StringIO
@@ -38,10 +38,13 @@ class UploadFile(APIView):
             except Exception:
                 return Response({'status': 'IMAGE_ERROR'})
             else:
-                if size[0] < 128 or size[1] < 128:
-                    return Response({'status': 'TOO_SMALL', 'size': ("%sx%s" % size), 'minsize': "128x128"})
-                if size[0] > 1024 or size[1] > 1024:
-                    return Response({'status': 'TOO_BIG', 'size': ("%sx%s" % size), 'maxsize': "1024x1024"})
+                restict = settings.USER_IMAGE_RESTRICTIONS
+                if size[0] < restict['min_width'] or size[1] < restict['min_height']:
+                    return Response({'status': 'TOO_SMALL', 'size': ("%sx%s" % size), 'minsize': "%sx%s" % (
+                        restict['min_width'], restict['min_height'])})
+                if size[0] > restict['max_width'] or size[1] > restict['max_height']:
+                    return Response({'status': 'TOO_BIG', 'size': ("%sx%s" % size), 'maxsize': "%sx%s" % (
+                        restict['max_width'], restict['max_height'])})
                 fl2.seek(0)
                 now = datetime.datetime.now()
                 path = now.strftime('%Y/%m/%d')
@@ -57,7 +60,13 @@ class CreateCakeView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = CustomCakeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({'status': 'OK'})
+            try:
+                obj = serializer.save()
+            except Exception:
+                raise
+                return Response({'status': 'failed'})
+            return Response({'status': 'OK', 'resultImage': obj.image.url if obj.image else None,
+                             'key': 'customcake:%s' % obj.id, 'price': obj.price})
         else:
+            print serializer._errors, serializer.initial_data
             return Response({'status': 'failed'})

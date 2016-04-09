@@ -168,7 +168,11 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
     $scope.updateBasket = function() {
         var total = 0;
         angular.forEach($scope.basket.items, function(value, key) {
-            total += parseFloat(value.price) * parseInt(value.quantity);
+            var prc = parseFloat(value.price);
+            var q = parseInt(value.quantity);
+            if (prc && q) {
+                total += parseFloat(value.price) * parseInt(value.quantity);
+            }
         })
         $scope.basket.total = total;
         $scope.storeData($scope.basket, 'basket');
@@ -212,11 +216,14 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
         }
         return false;
     }
-    $scope.textForm = {labelStyle: {top: 50, left: 50},
-                       imgStyle: {style: {}}, cakeParams: {font_size: 16, font_color: '#000', font_type: 'Arial',
-                       text_top: 50, text_left: 50}};
 
-    $scope.uploatedFile = null;
+    var setTextFormDefault = function() {
+        $scope.textForm = {labelStyle: {top: 50, left: 50},
+                           imgStyle: {style: {}}, cakeParams: {font_size: 16, font_color: '#000', font_type: 'Arial',
+                           text_top: 50, text_left: 50}};
+        $scope.uploatedFile = null;
+    }
+    setTextFormDefault();
     $scope.submitFile = function(element, formName, proggresSelector) {
         $scope.uploatedFile = null;
         var val = $(element).val();
@@ -255,7 +262,7 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
 
                 },
                 resetForm: true,
-                url: '/api/cake-composition/add/'
+                url: '/api/cake-image/add/'
             });
 
     }
@@ -291,6 +298,10 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
             var container = $('.full-image-wrapper');
             var frameSizeW = container.width();
             var frameSizeH = container.height();
+            $scope.textForm.cakeParams.viewport_width = frameSizeW;
+            $scope.textForm.cakeParams.viewport_height = frameSizeH;
+            $scope.textForm.cakeParams.label_padding_left = parseInt($('.img-label').css('padding-left')) || 0;
+            $scope.textForm.cakeParams.label_padding_top = parseInt($('.img-label').css('padding-top')) || 0;
             container.find('.img-frame.space-horizontal').each(function() {
                 frameSizeW -= $(this).width();
             })
@@ -303,6 +314,44 @@ mainApp.config(['$interpolateProvider', '$httpProvider', function($interpolatePr
             $scope.textForm.imgStyle.style.height = newSize[1];
         }
         return $scope.textForm.imgStyle.style || {};
+    }
+    $scope.saveCake = function() {
+        var data = $scope.textForm.cakeParams;
+        var image_frames = [];
+        var wdth = $('.full-image-wrapper').width();
+        var hght = $('.full-image-wrapper').height();
+        $('.img-frame').each(function(){
+            var el = $(this);
+            var src = el.find('img').prop('src');
+            var top = el.css('top');
+            var bottom = el.css('bottom');
+            var left = el.css('left');
+            var right = el.css('right');
+            var el_width = el.width();
+            var el_height = el.height();
+            if (el.hasClass('space-horizontal')) {
+                //left or right
+                if (parseInt(right) === 0) {
+                    left = wdth - el_width;
+                }
+            } else if (el.hasClass('space-vertical')) {
+                //top or bottom
+                if (parseInt(bottom) === 0) {
+                    top = hght - el_height;
+                }
+            }
+            image_frames.push({src: src, left: parseInt(left) || 0, top: parseInt(top) || 0, width: parseInt(el_width), height: parseInt(el_height)})
+        })
+        data.image_frames = image_frames;
+        $http.post('/api/cake/add/', data).success(function(data2){
+            if (data2.status == 'OK') {
+                $scope.textForm.resultImage = data2.resultImage;
+                $scope.orderProduct(data2.key, 'Custom cake', data2.resultImage, data2.price, 1);
+                setTextFormDefault();
+            } else {
+                $scope.showAlert('Sorry, could not save the composition');
+            }
+        })
     }
 
 }])

@@ -23,4 +23,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(CustomCake)
 class CustomCakeAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'img', 'create_time')
+
+    def img(self, obj):
+        if obj.image:
+            return '<img alt="" src="%s" width="80">' % obj.image.url
+    img.allow_tags = True
+    img.short_description = 'image'

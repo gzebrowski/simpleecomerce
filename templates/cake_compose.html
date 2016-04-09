@@ -24,7 +24,7 @@
             <p>Selecteer je foto</p>
 
             <span class="description">Toegestane formaten: .jpg, .png en .gif<br>
-            Toegestane maximale grootte: 1,5 MB</span>
+            Image cannot be smaller than {{ USER_IMAGE_RESTRICTIONS.min_width }}x{{ USER_IMAGE_RESTRICTIONS.min_height }} and cannot be bigger than {{ USER_IMAGE_RESTRICTIONS.max_width }}x{{ USER_IMAGE_RESTRICTIONS.max_height }}</span>
             <div class="progress-box">
                 <strong>progress:</strong><br />
                 <div class="progressbar"><div class="progress-slide" style="width: 0%;"></div></div>
@@ -77,6 +77,7 @@
                 </div>
                 <div class="medium-12 columns">
                     <textarea ng-model="textForm.cakeParams.text" placeholder="Insert text"></textarea>
+                    <a class="button" ng-click="saveCake()">Save and add to basket</a>
                 </div>
             </div>
         </div>

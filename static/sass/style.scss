@@ -38,6 +38,9 @@ body {
     display: inline-block;
     color: red;
 }
+.is-dropdown-submenu {
+    z-index: 7;
+}
 #main-content-container {
     min-height: calc(100vh - 6rem);
 }
